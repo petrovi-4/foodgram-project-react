@@ -112,7 +112,6 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [
         AllowAny,
     ]
-    pagination_class = None
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
 
@@ -123,7 +122,6 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [
         AllowAny,
     ]
-    pagination_class = None
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     filter_backends = [
@@ -146,6 +144,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         DjangoFilterBackend,
     ]
     filterset_class = RecipeFilter
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeSerializer
+        return CreateRecipeSerializer
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

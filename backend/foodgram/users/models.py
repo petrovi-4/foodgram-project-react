@@ -6,7 +6,7 @@ from .validators import validate_username
 
 
 class User(AbstractUser):
-    '''Кастомная модель пользователя.'''
+    """Кастомная модель пользователя."""
 
     email = models.EmailField('Почта', max_length=254, unique=True)
     first_name = models.CharField('Имя', max_length=150, blank=False)
@@ -25,7 +25,7 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
-    '''Модель подписок.'''
+    """Модель подписок."""
 
     user = models.ForeignKey(
         User,
