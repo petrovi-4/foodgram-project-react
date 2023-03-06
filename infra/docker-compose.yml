@@ -8,7 +8,7 @@ services:
       - ./.env
 
   backend:
-    image: petrovi4s/backend:v1
+    image: ruzhova/backend:v1
     volumes:
       - ../static/:/app/static/
       - ../media/:/app/media/recipes/
@@ -19,7 +19,7 @@ services:
     restart: always
 
   frontend:
-    image: petrovi4s/frontend:v1
+    image: ruzhova/frontend:v1
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -40,7 +40,7 @@ services:
       - frontend
     restart: always
 
-  volumes:
-    postgres_data:
-    static_value:
-    media_value:
+volumes:
+  postgres_data:
+  static_value:
+  media_value:
