@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,10 +21,7 @@ SECRET_KEY = (os.getenv('SECRET_KEY'),)
 
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv(
-    'ALLOWED_HOSTS',
-    '127.0.0.1',
-).split(' ')
+ALLOWED_HOSTS = ['158.160.20.150', '127.0.0.1']
 
 
 INSTALLED_APPS = [
@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
     'django_filters',
     'users.apps.UsersConfig',
     'api',
@@ -136,7 +135,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-EMPTY = '-пусто-'
+# EMPTY = '-пусто-'
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
