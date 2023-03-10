@@ -24,7 +24,7 @@ services:
     restart: always
 
   frontend:
-    image: petrovi4s/frontend:v1
+    image: petrovi4s/frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
