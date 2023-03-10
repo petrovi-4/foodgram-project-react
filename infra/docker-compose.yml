@@ -11,7 +11,7 @@ services:
     image: petrovi4s/backend:latest
     volumes:
       - ../static/:/app/static/
-      - ../media/:/app/media/recipes/
+      - ../media/:/app/media/recipes/a
     depends_on:
       - db
     env_file:
