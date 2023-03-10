@@ -8,9 +8,6 @@ services:
       - ./.env
 
   backend:
-#    build:
-#      context: ../backend/foodgram/
-#      dockerfile: ../backend/Dockerfile
     image: petrovi4s/backend:latest
     volumes:
       - ../static/:/app/static/
