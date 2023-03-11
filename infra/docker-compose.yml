@@ -2,7 +2,7 @@ version: '3.3'
 services:
 
   frontend:
-    image: petrovi4s/foodgram_frontend:v1
+    image: petrovi4s/foodgram_frontend:v1.0
     # build:
     #  context: ../frontend
     #  dockerfile: Dockerfile
