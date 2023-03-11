@@ -4,6 +4,7 @@ from urllib.parse import unquote
 
 from django.contrib.auth import get_user_model
 from django.http.response import HttpResponse
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_401_UNAUTHORIZED
