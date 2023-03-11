@@ -7,12 +7,11 @@
 
 ### Технологии
 - Python - 3.7
-- Django - 3.2.13
-- Django Rest Framework - 3.14
+- Django - 2.2.19
+- Django Rest Framework - 3.13
 - Docker
 - Docker Compose
-- Nginx - 1.21.3
-- Postgres - 15.1
+- Nginx - 1.19
 - Gunicorn - 20.1
 
 ### Сервис доступен по адресу
