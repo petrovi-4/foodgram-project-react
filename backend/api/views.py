@@ -179,7 +179,7 @@ class RecipeViewSet(ModelViewSet, AddDelViewMixin):
 
         for ing in enumerate(ingredients):
             shopping_list += (
-                f'{ing['ingredient'']}: {ing['amount']} {ing['measure']}\n'
+                f'{ing['ingredient']}: {ing['amount']} {ing['measure']}\n'
             )
         file = 'shopping_list'
         response = HttpResponse(shopping_list, 'Content-Type: application/pdf')
