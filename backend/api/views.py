@@ -1,13 +1,12 @@
-from datetime import datetime as dt
+import io
+from reportlab.pdfgen import canvas
 from urllib.parse import unquote
 
 from django.contrib.auth import get_user_model
-from django.db.models import F, Sum
 from django.http.response import HttpResponse
-from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
+from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from recipes.models import Ingredient, IngredientQuantity, Recipe, Tag
@@ -15,10 +14,13 @@ from recipes.models import Ingredient, IngredientQuantity, Recipe, Tag
 from .mixins import AddDelViewMixin
 from .paginators import PageLimitPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorStaffOrReadOnly
-from .serializers import (IngredientSerializer, RecipeSerializer,
-                          ShortRecipeSerializer, TagSerializer,
-                          UserSubscribeSerializer,
-                          )
+from .serializers import (
+    IngredientSerializer,
+    RecipeSerializer,
+    ShortRecipeSerializer,
+    TagSerializer,
+    UserSubscribeSerializer,
+)
 
 User = get_user_model()
 
@@ -164,24 +166,36 @@ class RecipeViewSet(ModelViewSet, AddDelViewMixin):
         return self.add_remove_relation(pk, 'shopping_cart_M2M')
 
     @api_view(['GET'])
-    def download_shopping_cart(self, request):
-        shopping_list = 'Список покупок'
-        ingredients = (
-            IngredientQuantity.objects.filter(
-                recipe__in=(user.shopping_list.values('id'))
-            )
-            .values(
-                ingredient=F('ingredients__name'),
-                measure=F('ingredients__measurement_unit'),
-            )
-            .annotate(amount=Sum('amount'))
-        )
+    def download_shopping_list(request):
+        user = request.user
+        if user.is_anonymous:
+            return Response(status=HTTP_401_UNAUTHORIZED)
 
-        for ing in enumerate(ingredients):
-            shopping_list += (
-                f'{ing['ingredient']}: {ing['amount']} {ing['measure']}\n'
-            )
-        file = 'shopping_list'
-        response = HttpResponse(shopping_list, 'Content-Type: application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="{file}.pdf"'
+        recipes = Recipe.objects.filter(
+            is_in_shopping_list=user
+        ).select_related('author')
+        buffer = io.BytesIO()
+        pdf = canvas.Canvas(buffer)
+        pdf.setFont('Helvetica-Bold', 14)
+        pdf.drawString(50, 750, 'Список покупок')
+        pdf.setFont('Helvetica', 12)
+        y = 700
+        for recipe in recipes:
+            pdf.drawString(50, y, f'{recipe.title} ({recipe.author.username})')
+            y -= 20
+            for ingredient in recipe.ingredients.all():
+                pdf.drawString(
+                    70,
+                    y,
+                    f'{ingredient.name} - {ingredient.amount} {ingredient.unit_of_measurement}',
+                )
+                y -= 20
+            y -= 10
+        pdf.showPage()
+        pdf.save()
+        buffer.seek(0)
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response[
+            'Content-Disposition'
+        ] = 'attachment; filename="shopping_list.pdf"'
         return response
