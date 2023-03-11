@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from recipes.models import Ingredient, IngredientQuantity, Recipe, Tag
 
 from .mixins import AddDelViewMixin
-from .paginators import PageLimitPagination
+from .pagination import PageLimitPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorStaffOrReadOnly
 from .serializers import (
     IngredientSerializer,
