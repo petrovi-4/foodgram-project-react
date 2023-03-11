@@ -1,10 +1,10 @@
 from django.contrib.admin import register
 from django.contrib.auth.admin import UserAdmin
 
-from .models import GourmetUser
+from .models import CustomUser
 
 
-@register(GourmetUser)
+@register(CustomUser)
 class GourmetUserAdmin(UserAdmin):
     list_display = (
         'username',
