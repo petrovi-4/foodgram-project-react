@@ -30,8 +30,8 @@ class TagViewSet(ReadOnlyModelViewSet):
 class IngredientViewSet(ReadOnlyModelViewSet):
     """Отображение игредиентов."""
 
-    permission_classes = (AllowAny,)
     serializer_class = serializers.IngredientSerializer
+    permission_classes = (AllowAny,)
 
    def get_queryset(self):
        """
@@ -40,6 +40,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
        """
 
        search_name = self.request.query_params.get('search')
+
        if not search_name:
            return Ingredient.objects.all()
        qs_startswith = list(
@@ -53,7 +54,6 @@ class IngredientViewSet(ReadOnlyModelViewSet):
            )
        )
        queryset = [i for i in qs_contains if i not in qs_startswith]
-
        return qs_startswith + queryset
 
 
