@@ -5,7 +5,7 @@ from .models import CustomUser
 
 
 @register(CustomUser)
-class GourmetUserAdmin(UserAdmin):
+class CustomUserAdmin(UserAdmin):
     list_display = (
         'username',
         'first_name',
