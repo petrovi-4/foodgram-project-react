@@ -1,71 +1,52 @@
 from django.contrib import admin
-from django.contrib.admin import TabularInline, register
+
+from foodgram.settings import EMPTY
+from .models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 
 
-from .models import Ingredient, IngredientQuantity, Recipe, Tag
-
-EMPTY_VALUE = 'Значение не задано'
-
-
-class IngredientInline(TabularInline):
-    model = IngredientQuantity
-    extra = 2
+class IngredientsInLine(admin.TabularInline):
+    model = Recipe.ingredients.through
 
 
-@register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-        'color',
-        'slug',
-    )
-    search_fields = ('name', 'color')
-
-    save_on_top = True
-    empty_value_display = EMPTY_VALUE
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'recipe']
+    search_fields = ['user__username', 'user__email']
+    empty_value_display = EMPTY
 
 
-@register(Ingredient)
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-        'measurement_unit',
-    )
-    search_fields = ('name',)
-    list_filter = ('name',)
-
-    save_on_top = True
-    empty_value_display = EMPTY_VALUE
+    list_display = ['id', 'name', 'measurement_unit']
+    search_fields = ['name']
+    empty_value_display = EMPTY
 
 
-@register(Recipe)
+admin.register(Recipe)
+
+
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-        'author',
-    )
-    fields = (
-        (
-            'name',
-            'cooking_time',
-        ),
-        (
-            'author',
-            'tags',
-        ),
-        ('text',),
-        ('image',),
-    )
-    raw_id_fields = ('author',)
-    search_fields = (
-        'name',
-        'author',
-    )
-    list_filter = (
-        'name',
-        'author__username',
-    )
+    list_display = ['id', 'name', 'author', 'favorites']
+    search_fields = ['name', 'author__username']
+    list_filter = ['tags']
+    empty_value_display = EMPTY
+    inlines = (IngredientsInLine,)
 
-    inlines = (IngredientInline,)
-    save_on_top = True
-    empty_value_display = EMPTY_VALUE
+    def favorites(self, obj):
+        if Favorite.objects.filter(recipe=obj).exists():
+            return Favorite.objects.filter(recipe=obj).count()
+        return 0
+
+
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'recipe']
+    search_fields = ['user__username', 'user__email']
+    empty_value_display = EMPTY
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'color', 'slug']
+    search_fields = ['name', 'slug']
+    empty_value_display = EMPTY
