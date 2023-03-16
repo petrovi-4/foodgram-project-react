@@ -8,8 +8,8 @@ com/petrovi-4/foodgram-project-react/actions/workflows/foodgram_workflow.yml/bad
 
 ### Технологии
 - Python - 3.7
-- Django - 2.2.19
-- Django Rest Framework - 3.13
+- Django - 3.2.8
+- Django Rest Framework - 3.14
 - Docker
 - Docker Compose
 - Nginx - 1.19
@@ -18,7 +18,10 @@ com/petrovi-4/foodgram-project-react/actions/workflows/foodgram_workflow.yml/bad
 ### Сервис доступен по адресу
 ```
 https://158.160.20.150
+Логин: test@test.com
+Пароль: test
 ```
+
 
 ### Запуск проекта
 Для запуска проекта, в директории где лежит файл docker-compose.yml, создать файл .env с переменными окружения:

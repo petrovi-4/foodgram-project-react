@@ -1,36 +1,49 @@
-from django_filters import rest_framework as filter
+from django_filters import rest_framework
 from rest_framework.filters import SearchFilter
-
-from recipes.models import Recipe, Tag
+from recipes.models import FavoriteList, Recipe, ShoppingList, Tag
+from .serializers import FAVORITED_KEY, SHOPPING_CART_KEY
 
 
 class IngredientFilter(SearchFilter):
     search_param = 'name'
 
 
-class RecipeFilter(filter.FilterSet):
-    author = filter.CharFilter()
-    tags = filter.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        queryset=Tag.objects.all(),
-        label='Tags',
-        to_field_name='slug',
-    )
-    is_favorited = filter.BooleanFilter(method='get_favorite')
-    is_in_shopping_cart = filter.BooleanFilter(
+class RecipeFilter(rest_framework.FilterSet):
+    is_favorited = rest_framework.BooleanFilter(method='get_is_favorited')
+    is_in_shopping_cart = rest_framework.BooleanFilter(
         method='get_is_in_shopping_cart'
     )
+    author = rest_framework.NumberFilter(field_name='author__id')
+    tags = rest_framework.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        to_field_name='slug',
+        queryset=Tag.objects.all(),
+    )
 
-    class Mets:
+    class Meta:
         model = Recipe
-        fields = ['tags', 'author', 'is_favorite', 'is_in_shopping_cart']
+        fields = (
+            FAVORITED_KEY,
+            SHOPPING_CART_KEY,
+            'author',
+            'tags',
+        )
 
-    def get_favorite(self, queryset, name, value):
+    def _many_to_many_recipe_filter(self, queryset, value, model):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Recipe.objects.none()
+
+        filter_id = model.objects.values_list('recipe_id', flat=True).filter(
+            user_id=user.id
+        )
         if value:
-            return queryset.filter(favorites__user=self.request.user)
-        return queryset
+            return queryset.filter(id__in=filter_id)
+
+        return queryset.exclude(id__in=filter_id)
+
+    def get_is_favorited(self, queryset, name, value):
+        return self._many_to_many_recipe_filter(queryset, value, FavoriteList)
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        if value:
-            return queryset.filter(shopping_cart__user=self.request.user)
-        return queryset
+        return self._many_to_many_recipe_filter(queryset, value, ShoppingList)

@@ -1,8 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.db.models import UniqueConstraint
-
-from .validators import validate_username
 
 
 class User(AbstractUser):
@@ -11,39 +8,42 @@ class User(AbstractUser):
     email = models.EmailField('Почта', max_length=254, unique=True)
     first_name = models.CharField('Имя', max_length=150, blank=False)
     last_name = models.CharField('Фамилия', max_length=150, blank=False)
-    username = models.CharField(
-        'Имя пользователя', max_length=150, validators=[validate_username]
-    )
+    password = models.CharField('Пароль', max_length=150, blank=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ('id',)
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользователи'
 
     def __str__(self):
         return self.username
 
 
-class Subscription(models.Model):
+class Follow(models.Model):
     """Модель подписок."""
 
     user = models.ForeignKey(
         User,
         related_name='follower',
         on_delete=models.CASCADE,
-        verbose_name='Подписчик',
     )
     author = models.ForeignKey(
         User,
-        related_name='author',
+        related_name='following',
         on_delete=models.CASCADE,
-        verbose_name='Автор',
     )
 
     class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+        ordering = ('user',)
         constraints = [
-            UniqueConstraint(
-                fields=['user', 'author'], name='user_author_unique'
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_follower',
             )
         ]
 
