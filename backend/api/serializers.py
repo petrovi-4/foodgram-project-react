@@ -160,24 +160,25 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        instance.ingredients.clear()
-        self.create(ingredients, instance)
-        instance.tags.clear()
-        instance.tags.set(tags)
-        return super().update(instance, validated_data)
-
-        # instance.name = validated_data.get('name')
-        # instance.image = validated_data.get('image')
-        # instance.text = validated_data.get('text')
-        # instance.cooking_time = validated_data.get('cooking_time')
-        # instance.tags.clear()
-        # instance.tags.set(validated_data.get('tags'))
+        # ingredients = validated_data.pop('ingredients')
+        # tags = validated_data.pop('tags')
         # instance.ingredients.clear()
-        # self._add_ingredients(validated_data.get('ingredients'), instance)
-        # instance.save()
-        # return instance
+        # self.create(ingredients, instance)
+        # instance.tags.clear()
+        # instance.tags.set(tags)
+        # return super().update(instance, validated_data)
+        instance.name = validated_data.get('name', instance.name)
+        instance.image = validated_data.get('image', instance.image)
+        instance.text = validated_data.get('text', instance.image)
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time
+        )
+        instance.tags.clear()
+        instance.tags.set(validated_data.get('tags', instance.tags))
+        instance.ingredients.clear()
+        self._add_ingredients(validated_data.get('ingredients'), instance)
+        instance.save()
+        return instance
 
     def validate(self, attrs):
         ingredients = attrs.get('ingredients')
