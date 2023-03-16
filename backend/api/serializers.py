@@ -169,8 +169,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         instance.tags.set(validated_data.get('tags'))
         instance.ingredients.clear()
         self._add_ingredients(validated_data.get('ingredients'), instance)
-
-        return super().update(instance, validated_data)
+        instance.save()
+        return instance
 
     def validate(self, attrs):
         ingredients = attrs.get('ingredients')
