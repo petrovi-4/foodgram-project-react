@@ -156,7 +156,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         )
         recipe.tags.set(tags)
         self._add_ingredients(ingredients, recipe)
-
         return recipe
 
     @transaction.atomic
@@ -185,7 +184,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                     {'ingredients': f'Дублирование ингридиента {instance}'}
                 )
             unique_ingredients.append(instance)
-
         return attrs
 
     def to_representation(self, value):
