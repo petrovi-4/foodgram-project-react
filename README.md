@@ -1,7 +1,6 @@
 # Foodgram - сайт с вкусными рецептами!
 
-![GitHub actions](https://github.
-com/petrovi-4/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
+![GitHub actions](https://github.com/petrovi-4/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
 ## «Продуктовый помощник». 
 Онлайн-сервис в котором пользователи могут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
